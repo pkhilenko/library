@@ -115,3 +115,102 @@ $ curl -X GET -H "Authorization: Token token=rvUIU0lMU35eSh0laX7G6TKWE4wanY/t27N
 ## gem 'rack-attack'
 ### Add it to the application.rb: config.middleware.use Rack::Attack
 $ touch config/initializers/rack_attack.rb
+## pundit
+### gem 'pundit', '~> 2.0', '>= 2.0.1'
+$ bundle install
+$ rails g pundit:install
+###Let’s add more filters and method to the ApplicationController
+```ruby
+class ApplicationController < ActionController::API
+  include Pundit
+  include ActionController::HttpAuthentication::Token::ControllerMethods
+  
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found
+  rescue_from Pundit::NotAuthorizedError, with: :not_authorized
+  
+  before_action :authenticate_admin
+  
+  ...
+    
+  def current_user
+    @user ||= admin_user
+  end
+  
+  def admin_user
+    return unless @admin && params[:user_id]
+
+    User.find_by(id: params[:user_id])
+  end
+  
+  def pundit_user
+    Contexts::UserContext.new(current_user, current_admin)
+  end
+
+  def authenticate
+    authenticate_admin_with_token || authenticate_user_with_token || render_unauthorized_request
+  end
+  
+  ...
+    
+  def current_user_presence
+    unless current_user
+      render json: { error: 'Missing a user' }, status: 422
+    end
+  end
+  
+  ...
+    
+  def not_authorized
+    render json: { error: 'Unauthorized' }, status: 403
+  end
+end
+```
+## Let’s first add the UserContext class (to app/policies/contexts/user_context.rb):
+## редактируем ApplicationPolicy
+## When we’re done with the main policy, let’s add a book copy policy (under app/policies).
+## We’re missing the borrow and the return_book methods. Let’s add them to the BookCopiesController:
+```ruby
+module V1
+  class BookCopiesController < ApplicationController
+    skip_before_action :authenticate_admin, only: [:return_book, :borrow]
+    before_action :authenticate, only: [:return_book, :borrow]
+    before_action :current_user_presence, only: [:return_book, :borrow]
+    before_action :set_book_copy, only: [:show, :destroy, :update, :borrow, :return_book]
+    
+    ...
+    
+    def borrow
+      if @book_copy.borrow(current_user)
+        render json: @book_copy, adapter: :json, status: 200
+      else
+        render json: { error: 'Cannot borrow this book.' }, status: 422
+      end
+    end
+
+    def return_book
+      authorize(@book_copy)
+
+      if @book_copy.return_book(current_user)
+        render json: @book_copy, adapter: :json, status: 200
+      else
+        render json: { error: 'Cannot return this book.' }, status: 422
+      end
+    end
+    
+    ...
+  end
+end
+```
+## Now, we need to update the BookCopy class – add the borrow and the return_book methods:
+```ruby
+
+```
+## And one more thing, routes! We need to update our router:
+```ruby
+resources :book_copies, only: [:index, :create, :update, :destroy, :show] do
+  member do
+    put :borrow
+    put :return_book
+  end
+end
+```

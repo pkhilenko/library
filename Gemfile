@@ -45,3 +45,4 @@ end
 gem 'active_model_serializers', '~> 0.10.10'
 gem 'kaminari', '~> 1.1', '>= 1.1.1'
 gem 'rack-attack', '~> 6.1'
+gem 'pundit', '~> 2.0', '>= 2.0.1'

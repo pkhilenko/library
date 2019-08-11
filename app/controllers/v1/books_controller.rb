@@ -42,5 +42,19 @@ module V1
     def book_params
       params.require(:book).permit(:title, :author_id)
     end
+
+    def borrow(borrower)
+      return false if user.present?
+
+      self.user = borrower
+        save
+    end
+
+    def return_book(borrower)
+      return false unless user.present?
+
+      self.user = nil
+      save
+    end
   end
 end
