@@ -105,3 +105,13 @@ $ rails g migration add_admin_to_users admin:boolean
 ```ruby
 User.all.each { |u| u.send(:generate_api_key); u.save }
 ```
+### в ApplicationController добавляем before_action :authenticate_admin
+### в консоли
+```
+User.where(api_key: "rvUIU0lMU35eSh0laX7G6TKWE4wanY/t27NEfjpf").update(admin: true)
+```
+$ curl -X GET -H "Authorization: Token token=rvUIU0lMU35eSh0laX7G6TKWE4wanY/t27NEfjpf" http://localhost:3000/books/3
+
+## gem 'rack-attack'
+### Add it to the application.rb: config.middleware.use Rack::Attack
+$ touch config/initializers/rack_attack.rb
