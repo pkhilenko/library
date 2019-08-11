@@ -95,3 +95,13 @@ end
 $ rails g serializer  book_copy
 
 ## Cоздаем контроллеры
+## Tokens – API keys
+$ rails g migration add_api_key_to_users api_key:index
+$ rails g migration add_admin_to_users admin:boolean
+
+### в модель User добавляем before_create :generate_api_key
+### в ApplicationController добавляем include ActionController::HttpAuthentication::Token::ControllerMethods  и методы взаимодействия
+## добавляем токен всем юзерам в rails console
+```ruby
+User.all.each { |u| u.send(:generate_api_key); u.save }
+```
