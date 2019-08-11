@@ -93,3 +93,5 @@ class BookSerializer < ActiveModel::Serializer
 end
 ```
 $ rails g serializer  book_copy
+
+## Cоздаем контроллеры
