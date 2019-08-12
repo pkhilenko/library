@@ -235,3 +235,9 @@ Shoulda::Matchers.configure do |config|
   end
 end
 ```
+### Also we need to enable pundit test methods. Add pundit to rails_helper.rb (top of the file): require 'pundit/rspec'
+### Create a folder called factories under specs and add the first factory – admin and all models.
+## Model Spec
+### Create an author_spec.rb file under the specs/models: and other models
+### Create all controller specs
+### Create spec/policies/book_copy_policy_spec.rb
