@@ -214,3 +214,24 @@ resources :book_copies, only: [:index, :create, :update, :destroy, :show] do
   end
 end
 ```
+-
+-
+# Rspec
+
+-  gem 'rspec-rails'
+-  gem 'shoulda-matchers'
+-  gem 'factory_bot_rails'
+$ rails generate rspec:install
+### rails_helper.rb
+```
+config.include FactoryBot::Syntax::Methods
+```
+```ruby
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :active_record
+    with.library :active_model
+  end
+end
+```
