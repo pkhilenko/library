@@ -116,7 +116,8 @@ GEM
     rack (2.0.7)
     rack-attack (6.1.0)
       rack (>= 1.0, < 3)
-    rack-cors (1.0.3)
+    rack-cors (1.0.5)
+      rack (>= 1.6.0)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.2.3)
@@ -202,7 +203,7 @@ DEPENDENCIES
   puma (~> 3.11)
   pundit (~> 2.0, >= 2.0.1)
   rack-attack (~> 6.1)
-  rack-cors (~> 1.0, >= 1.0.3)
+  rack-cors (~> 1.0)
   rails (~> 5.2.3)
   rspec-rails
   shoulda-matchers (~> 4.0, >= 4.0.1)
